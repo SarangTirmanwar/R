@@ -1,0 +1,340 @@
+---
+title: "Final Project"
+author: "Sarang Tirmanwar"
+date: "2023-10-29"
+output: word_document
+---
+
+# R MARKDOWN
+# INTRODUCTION
+
+In this project, we are analyzing a dataset of personal loans granted by a national bank in 2017. The main objectives are to identify the factors leading to loan defaults, create a predictive model for future defaults, and minimize financial losses. The bank is facing increasing loan defaults, and they want to improve their risk assessment.
+
+# Key Questions:
+  
+What factors contribute to loan defaults?
+
+Can we accurately predict loan defaults?
+
+How many costly prediction errors may occur?
+
+Are there actions or policies to reduce default risks?
+
+# Dataset Overview
+
+The dataset contains information about individuals who applied for personal loans from a national bank in 2017. It includes financial details and applicant behavior, such as income, debt ratios, loan amount, interest rate, and historical payment records. The main focus is on the "loan_default" variable, which indicates whether applicants eventually defaulted on their loans, causing financial losses for the bank. Other variables include loan purpose, application type, homeownership status, income, employment duration, credit history, and more. The goal is to analyze these factors to predict loan defaults and reduce financial losses.
+
+loan_default: Indicates whether the borrower defaulted on their loan (yes/no).
+
+loan_amount: Represents the total loan amount borrowed by an individual.
+
+installment: Denotes the monthly installment amount to be paid.
+
+interest_rate: Specifies the loan's interest rate in percentage.
+
+loan_purpose: Describes the purpose for which the personal loan is taken.
+
+application_type: Indicates whether the loan application is made individually or jointly.
+
+term: Refers to the duration of the loan, which can be three or five years.
+
+homeownership: Provides information about the borrower's current homeownership status.
+
+annual_income: Represents the annual income of the person applying for the loan.
+
+current_job_years: Indicates the number of years the applicant has been in their current job.
+
+debt_to_income: Denotes the individual's debt-to-income ratio at the time of loan application.
+
+total_credit_lines: Represents the total count of open credit lines for the applicant.
+
+years_credit_history: Specifies the length of the applicant's credit history.
+
+missed_payment_2_yr: Indicates whether there have been any missed payments in the last 2 years (yes/no).
+
+history_bankruptcy: Describes the presence or absence of a history of bankruptcy (yes/no).
+
+history_tax_liens: Indicates whether there is a history of tax liens (yes/no).
+
+# DATA ANALYSIS
+
+```{r}
+#EDA
+loan_df <- readRDS("/Users/sarangtirmanwar/Downloads/loan_data.rds")
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(skimr)
+library(caret)
+library(tidyr)
+dim(loan_df)
+str(loan_df)
+head(loan_df)
+glimpse(loan_df)
+skim(loan_df)
+summary(loan_df)
+```
+
+
+
+# 1. Is there a relationship between loan default and the loan purpose?
+Answer: There appears to be a significant relationship between the purpose of the loan and the likelihood of default. The default rates vary across different loan purposes. The loan purpose significantly influences the default rate. Loans for medical and credit card purposes have high default rates (around 60.5% and 53.5%, respectively), while debt consolidation and small business loans have lower default rates (25.3% and 25.9%, respectively). This analysis suggests that the loan purpose is an important factor in predicting loan default. Borrowers taking loans for specific purposes, such as medical expenses, appear to have a higher risk of default compared to those using loans for other purposes.
+
+```{r}
+# Calculate the default rate for each loan purpose
+default_by_purpose <- loan_df %>%
+  group_by(loan_purpose) %>%
+  summarise(default_rate = mean(loan_default == 'yes'))
+default_by_purpose 
+
+# Create a bar chart
+ggplot(default_by_purpose, aes(x = loan_purpose, y = default_rate)) +
+  geom_bar(stat = 'identity', fill = 'blue') +
+  labs(x = "Loan Purpose", y = "Default Rate") +
+  ggtitle("Loan Default Rate by Loan Purpose")
+
+```
+
+
+
+# 2.Is there a relationship between default rates for different combinations of loan purpose and loan amount ?
+Answer: The scatter plot shows the relationship between loan default, loan purpose, and loan amount. It appears that loan amount and loan purpose are both factors influencing the default rate. Some loan amounts within the "debt_consolidation" category have higher default rates, while others have no defaults. This suggests that loan amount plays a role in loan default, with certain amounts being riskier than others, especially within the "debt_consolidation" purpose.
+
+```{r}
+# Calculate default rates for different combinations of loan purpose and loan amount
+default_rates <- loan_df %>%
+  group_by(loan_purpose, loan_amount) %>%
+  summarise(default_rate = mean(loan_default == "yes"))
+default_rates
+
+# Create a scatter plot to visualize the relationship
+ggplot(default_rates, aes(x = loan_amount, y = loan_purpose, color = default_rate)) +
+  geom_point() +
+  labs(x = "Loan Amount", y = "Loan Purpose") +
+  scale_color_gradient(low = "blue", high = "red") +
+  ggtitle("Relationship Between Loan Default, Loan Purpose, and Loan Amount")
+```
+
+
+
+# 3. How does the applicant's annual income impact loan defaults?
+Answer : The mean annual income for borrowers who defaulted on their loans (yes) is $67,819, while for non-defaulters (no), it's higher at $76,096. Similarly, the median annual income for borrowers who defaulted on their loans is $60,000, while for non-defaulters, it's higher at $69,000. This suggests that, on average, borrowers who default on their loans tend to have lower annual incomes compared to those who do not default.
+
+```{r}
+# Calculate the mean and median annual income for default and non-default cases using dplyr
+income_summary <- loan_df %>%
+  group_by(loan_default) %>%
+  summarise(mean_income = mean(annual_income), median_income = median(annual_income))
+income_summary
+# Create a grouped bar chart to compare mean and median income by loan default
+ggplot(income_summary, aes(x = loan_default, y = mean_income, fill = loan_default)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  geom_bar(aes(y = median_income), stat = 'identity', position = 'dodge', alpha = 0.6, width = 0.4) +
+  labs(x = "Loan Default", y = "Income") +
+  ggtitle("Comparison of Mean and Median Income by Loan Default")
+```
+
+# 4. Is there a correlation between the applicant's job stability (current_job_years) and loan defaults, and does this correlation differ based on loan purpose?
+Answer: The box plot analysis indicates that borrowers who defaulted on their loans tend to have a lower median value for years employed at their current job compared to those who did not default. This suggests that less job stability is associated with a higher likelihood of loan defaults. Additionally, the box plot differentiates loan purposes, and it appears that the impact of job stability on loan defaults is consistent across different loan purposes. In other words, job stability is a significant factor in loan defaults, and this relationship is not significantly influenced by the specific purpose of the loan.
+
+```{r}
+# Create a box plot to compare years employed at the current job for default and non-default cases, grouped by loan purpose
+ggplot(loan_df, aes(x = loan_default, y = current_job_years, fill = loan_purpose)) +
+  geom_boxplot() +
+  labs(x = "Loan Default", y = "Years Employed at Current Job") +
+  ggtitle("Distribution of Years Employed at Current Job by Loan Default and Loan Purpose")
+```
+
+
+# 5.Is there a relationship between total credit lines, loan default, and loan term ?
+Answer: The scatter plot illustrates the relationship between the total number of credit lines and loan default. Each point represents an individual borrower. We can observe that there is no clear linear pattern or trend in the relationship between the total credit lines and loan default. Both default (yes) and non-default (no) cases are scattered across different values of total credit lines. The color of the points represents the loan term, with one color indicating three-year loans and another indicating five-year loans. Within both loan term categories, we see a mix of default and non-default cases across various total credit lines. In summary, the scatter plot suggests that the relationship between total credit lines, loan default, and loan term is not easily characterized by a simple linear trend.
+
+```{r}
+#Create a scatter plot to explore the relationship between total credit lines, loan default, and loan term 
+ggplot(loan_df, aes(x = total_credit_lines, y = loan_default, color = term)) +
+  geom_point() +
+  labs(x = "Total Credit Lines", y = "Loan Default") +
+  ggtitle("Relationship Between Total Credit Lines, Loan Default, and Loan Term")
+
+```
+
+
+# 6.Is there a relationship between loan default, missed payments, and homeownership?
+Answer: The chart explores the relationship between loan default (yes or no) and whether borrowers have missed payments in the last 2 years (yes or no). In general, it appears that borrowers who have missed payments are more likely to default on their loans compared to those who have not missed payments. This is indicated by the taller bar for "yes" in the "Missed Payments" category within both "Default" and "No Default" groups. While missed payments seem to be associated with a higher likelihood of default, the impact of homeownership on loan default is not as evident from this chart alone. Further analysis or statistical testing may be required to determine if homeownership significantly influences loan default rates. In summary, the stacked bar chart demonstrates that missed payments in the last 2 years are associated with a higher likelihood of loan default across different homeownership categories.
+
+```{r}
+#Create a stacked bar chart to explore the relationship between loan default, missed payments, and homeownership 
+ggplot(loan_df, aes(x = loan_default, fill = missed_payment_2_yr)) +
+  geom_bar(position = "fill") +
+  facet_grid(. ~ homeownership) +
+  labs(x = "Loan Default", y = "Proportion") +
+  ggtitle("Relationship Between Loan Default, Missed Payments, and Homeownership")
+
+```
+
+# Predictive modelling (lOGISTIC REGRESSION AND RANDOM FOREST)
+
+```{r}
+#logistic
+
+# Importing necessary libraries
+library(tidyverse)  # Comprehensive data manipulation and visualization tools.
+library(tidymodels)  # Framework for modeling and machine learning.
+library(vip)  # Variable Importance Plots.
+
+# Set Seed
+set.seed(123)
+
+# Split the data into training and testing sets
+loan_split <- initial_split(loan_df, prop = 0.7, strata = loan_default)
+loan_train <- training(loan_split)
+loan_test <- testing(loan_split)
+
+# Display the number of rows in the training and testing sets
+nrow(loan_train)
+nrow(loan_test)
+
+# Create a recipe to preprocess the data
+loan_recipe <- recipe(loan_default ~ ., data = loan_train) %>%
+  step_normalize(all_numeric(), -all_outcomes()) %>%
+  step_dummy(all_nominal(), -all_outcomes())
+
+# Prepare the recipe
+loan_recipe %>%
+  prep(training = loan_train) %>%
+  bake(new_data = NULL)
+
+# Create a logistic regression model
+lmodel <- logistic_reg() %>%
+  set_engine('glm') %>%
+  set_mode('classification')
+
+# Create a workflow that includes the model and recipe
+loan_workflow <- workflow() %>%
+  add_model(lmodel) %>%
+  add_recipe(loan_recipe)
+
+# Fit the logistic regression model
+logistic_fit <- loan_workflow %>%
+  fit(data = loan_train)
+
+# Extract the trained model
+loan_train_model <- logistic_fit %>%
+  pull_workflow_fit()
+
+# Visualize variable importance using VIP package
+vip(loan_train_model)
+
+# Make predictions with the logistic regression model
+class_preds <- predict(logistic_fit, new_data = loan_test, type = 'class')
+prob_preds <- predict(logistic_fit, new_data = loan_test, type = 'prob')
+
+# Combine predictions with actual loan_default values
+loan_result <- loan_test %>%
+  select(loan_default) %>%
+  bind_cols(class_preds, prob_preds)
+
+# Create cross-validation folds
+loan_folds <- vfold_cv(loan_train, v = 5)
+
+# Calculate confusion matrix
+conf_mat(loan_result, truth = loan_default, estimate = .pred_class)
+
+# Calculate F1-measure
+f_meas(loan_result, truth = loan_default, estimate = .pred_class)
+
+# Define a set of metrics including accuracy and sensitivity
+loan_metric <- metric_set(accuracy, sens)
+
+# Evaluate the model using the defined metrics
+loan_metric(loan_result, truth = loan_default, estimate = .pred_class)
+
+# Plot ROC curve
+loan_result %>%
+  roc_curve(truth = loan_default, .pred_yes) %>%
+  autoplot()
+
+# Random Forest Model
+set.seed(223)
+
+# Split the data into training and testing sets
+loan_split <- initial_split(loan_df, prop = 0.7)
+training_data <- training(loan_split)
+testing_data <- testing(loan_split)
+
+# Create a random forest model
+randomf_model <- rand_forest() %>%
+  set_engine("ranger", importance = "permutation", num.threads = 1) %>%
+  set_mode("classification")
+
+# Create a workflow that includes the random forest model and recipe
+randomf_wf <- workflow() %>%
+  add_model(randomf_model) %>%
+  add_recipe(loan_recipe)
+
+# Fit the random forest model
+randomf_fit <- randomf_wf %>%
+  last_fit(split = loan_split)
+
+# Collect predictions
+randomf_results <- randomf_fit %>%
+  collect_predictions()
+
+# Fit the random forest model for training
+train_randomf_workflow <- randomf_wf %>%
+  fit(data = training(loan_split))
+
+# Define a set of metrics for evaluation
+randomf_metrics <- metric_set(accuracy, f_meas, roc_auc)
+
+# Make predictions with the random forest model
+randomf_predictions <- predict(train_randomf_workflow, testing_data) %>%
+  bind_cols(testing_data)
+
+# Calculate metrics for the random forest model
+randomf_metrics <- metrics(randomf_predictions, truth = loan_default, estimate = .pred_class)
+
+# Plot ROC curve for the random forest model
+library(pROC)
+predictions <- randomf_results$.pred_yes
+labels <- ifelse(randomf_results$loan_default == "yes", 1, 0)
+roc_curve <- roc(labels, predictions)
+plot(roc_curve, main = "ROC Curve", col = "pink")
+abline(a = 0, b = 1, lty = 3, col = "black")
+
+```
+
+# SUMMARY OF RESULTS
+
+In our exploratory data analysis, several noteworthy findings emerged regarding the relationship between various factors and loan defaults. One crucial insight is the strong association between the purpose of a loan and the likelihood of default. Loans intended for medical expenses and credit card use exhibit notably higher default rates, whereas debt consolidation and small business loans are linked to lower default rates. This underlines the importance of considering the loan's purpose when assessing credit risk.
+
+Additionally, loan amount appears to be a factor influencing loan default, particularly within the "debt_consolidation" category. Applicants with lower annual incomes were found to be more prone to loan defaults, suggesting the importance of rigorous income verification in the lending process. Moreover, job stability, as measured by the number of years employed at the current job, significantly impacts loan defaults, with those having less job stability being at a higher risk.
+
+While no clear linear relationship was established between the total number of credit lines and loan defaults, it was observed that borrowers who had missed payments in the last two years were more likely to default. However, the analysis did not yield a conclusive result regarding the impact of homeownership on loan defaults. These findings provide valuable insights that can inform lending practices and help reduce loan defaults, ultimately benefitting lending institutions.
+
+
+# Best Classification Model
+
+Logistic Regression excelled over Random Forest, achieving a superior accuracy rate of 0.921 compared to 0.909 and a higher sensitivity level of 0.876. Furthermore, Logistic Regression provides a more transparent and interpretable understanding of how input features relate to the target variable. This favorable combination of high accuracy, interpretability, and resource efficiency collectively establishes Logistic Regression as the preferred choice for effectively predicting loan defaults.
+
+# Recommendations:
+
+The analysis yields several important insights that can inform business decisions:
+  
+Risk Assessment: Lenders should consider the purpose of the loan when assessing credit risk. Loans for medical and credit card purposes pose higher risks, while debt consolidation and small business loans are associated with lower default rates.
+
+Income Verification: Lenders should pay close attention to the income levels of applicants. Borrowers with lower annual incomes are more likely to default, so income verification and assessment should be a crucial part of the lending process.
+
+Job Stability: Lenders should consider the stability of an applicant's current job. Those with shorter job tenures are at a higher risk of default. This factor should be included in credit risk models.
+
+Missed Payments: Lenders should have stringent policies for borrowers who have missed payments in the last two years. They represent a higher default risk, and additional scrutiny or risk mitigation measures may be necessary.
+
+Further Analysis: While the relationship between homeownership and loan default was not clear in this analysis, a more in-depth investigation or statistical analysis might provide a clearer picture of its impact. Lenders may want to explore this aspect further.
+
+# Conclusion:
+
+In conclusion, these findings and recommendations offer lending institutions valuable tools for improving their lending practices, reducing loan defaults, and ultimately fostering a healthier financial environment for both borrowers and lenders. By implementing these insights, lenders can make more informed decisions, mitigate risks, and support responsible lending practices
+
+
+
+

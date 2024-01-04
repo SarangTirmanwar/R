@@ -1,0 +1,278 @@
+---
+title: "Mid Term Data Analysis"
+author: "Sarang Tirmanwar"
+date: "2023-10-08"
+output: word_document
+---
+
+INTRODUCTION
+
+In this mid-semester project, we delve into the field of Human Resources Analytics, aiming to address the critical issue of employee attrition within a U.S.-based tech company. With a dataset containing 1,200 employee records, we embark on an initial data analysis to understand the factors contributing to employee departures. This is pivotal for the company, as high attrition rates can lead to significant costs and disruptions in operations.
+
+PROBLEM DESCRIPTION
+
+The company has experienced an uptick in employee departures, particularly in a competitive tech landscape where certain skill sets are in high demand. This has had a detrimental effect on the company's ability to deliver quality products and maintain operational efficiency
+
+SUMMARY OF DATA
+
+The dataset comprises various attributes of employees, such as department, job level, salary, weekly hours, business travel, tenure at the company, years since last promotion, and more. These variables are crucial in understanding the dynamics surrounding employee attrition.
+
+Employee attrition status (left_company): Yes/No
+Department: Department within the company
+Job level: Associate - Vice President
+Salary: Employee yearly salary (US Dollars)
+Job satisfaction: Self-reported job satisfaction (company survey)
+Performance rating: Most recent annual performance rating
+Marital status: Single, Married, or Divorced
+Business travel: Level of required business travel
+Years at company: Tenure at the company (years)
+Years since promotion: Years since last promotion
+Previous companies: Number of previous companies the employee has worked for
+Miles from home: Distance from employee address to office location
+Weekly hours: Self-reported average weekly hours spent on the job (company survey)
+
+BIG QUESTIONS
+
+What factors contribute to employees leaving the company, based on summary statistics?
+Can we provide insights for top management, using plots alone and without running predictive models?
+
+
+EXPLORATORY DATA ANALYSIS
+
+Utilizing commands like dim(), str(), head(), glimpse(), skim(), and summary() for initial data exploration.
+
+Formulating five questions exploring the relationship between employee attrition and other variables.
+
+
+Investigating relationships between leaving the company and department, as well as department and job level combined.
+
+Providing insights through summary tables and graphs, drawing conclusions on variables association with employee attrition.
+
+
+ANALYSIS AND RESULTS
+
+QUESTION 1
+
+Question 1: Is there a relationship between leaving the company and 
+department?
+
+Answer: Yes, there does appear to be a relationship between leaving the company and the department.  For instance, the "Research" department has a notably low attrition rate, with only 8 employees leaving. Conversely, the "Sales" department experiences a much higher departure rate, with 54 employees leaving
+
+QUESTION 2
+
+Question 2: Is there a relationship between leaving the company and 
+department and job level together?
+
+Answer: Yes, there is a clear relationship between leaving the company and the combination of department and job level. For example, among Associates, 5 stayed while 7 left. For Directors, 17 stayed and only 2 left. This pattern persists across various job levels. In short, the likelihood of an employee leaving is significantly influenced by their department and job level.
+
+Question 3: Are marital status and salary factors for leaving?
+
+Answer: The graph indicates that employees' marital status doesn't significantly influence their likelihood to resign. However, salary plays a crucial role. Both single and married employees appear to resign for similar salary ranges. On the other hand, even with higher salaries, divorced employees might still leave the company. This suggests that for them, salary isn’t the primary factor in their decision to leave. It implies that, at this stage of their 
+
+Question 4: Is there a relationship between department and salary?
+
+Answer: It's evident that marital status doesn't show a significant correlation with employee resignations. Both single and married employees appear to leave their positions regardless of their marital status. However, it's apparent that salary plays a pivotal role. Both single and married employees who resign seem to do so for similar salary considerations. Interestingly, even though divorced employees tend to have higher salaries, this doesn't necessarily deter them from leaving the company. This suggests that salary might not be their primary focus at this stage in their post-divorce phase.
+
+Question 5: Is there any relationship between employees leaving the company and their weekly hours?
+
+Answer: Yes, there is a clear connection between employees departing from the company and their weekly working hours. The table demonstrates a noticeable disparity in average weekly hours between those who stayed and those who left. Employees who remained with the company worked less than those who chose to leave.
+
+
+QUESTION 6
+
+Question 6: Is there a relationship between employees leaving the company and their job level?
+
+Answer: Yes, there is a correlation between employee attrition and their job position. The data depicted in the "Leaving-position" chart indicates that individuals in foundational roles such as associates and managers exhibit a greater likelihood of leaving the company. Conversely, employees in elevated positions are more inclined to remain, particularly evident in the notable disparity between managers and senior managers.
+
+Question 7: Is there a relationship between job_satisfaction and salary?
+
+Answer: It is evident that contented employees are less inclined to seek opportunities elsewhere. Additionally, there's a correlation between higher salaries, job satisfaction, and reduced likelihood of leaving. However, intriguingly, not all individuals in lower-paying and less satisfying roles express a desire to switch jobs. The majority of them are content to remain in their current positions. Identifying these employees and comprehending the reasons behind their reluctance to leave can furnish valuable insights for the HR department.
+
+
+Question 8: Question: Is there a relationship between yrs_at_company and salary? Does the relationship affect the employee’s willingness to leave their company?
+
+Answer: Looking at below chart, it's clear that salary and weekly working hours don't have a straightforward connection. This might be due to the diversity of job roles. However, in the bottom-left section, we can see that employees with lower salaries and less experience are more likely to leave. When salaries increase, even new employees show a stronger inclination to stay. So, it's a good idea for the HR department to identify promising talents early on and offer competitive salaries to help retain them.
+
+
+Question 9: Is there a relationship between employees leaving the company and their current salary?
+
+Answer: The data shows a notable distinction between employees who stay with the company and those who leave. Those who left generally had lower salaries, while the remaining employees had higher average salaries. Specifically, a larger proportion of departing employees had salaries below a certain threshold compared to those who stayed.
+
+CONCLUSION
+
+
+The key findings from the Exploratory Data Analysis that stood out to me are:
+
+
+I discovered that departmental affiliation strongly impacts attrition rates. "Sales" experienced higher departures, while "Research" had lower attrition. Job levels also play a crucial role; Associates and Managers were more likely to leave, emphasizing the need for clear career growth paths.
+
+
+Marital status showed minimal correlation with resignations, but salary emerged as a key motivator. Both single and married employees who left cited similar salary concerns, highlighting the importance of competitive compensation packages.
+
+Workload management and work-life balance initiatives may be needed, as employees who stayed tended to work fewer hours. Competitive entry-level salaries are crucial, as lower-paid employees were more likely to leave.
+
+Additionally, job satisfaction is vital for retention. Contented employees 
+are less likely to leave, and higher salaries are linked to greater job
+satisfaction. Addressing job satisfaction factors can be crucial in retaining 
+talent.
+
+These findings are important because they provide actionable insights for the company. By understanding the specific factors influencing attrition, executives can implement targeted strategies to improve retention rates, ultimately enhancing productivity and reducing operational costs associated with
+turnover.
+
+Recommendations:
+  
+Develop department-specific retention strategies based on observed attrition rates. Provide targeted career development opportunities and recognize achievements.
+
+Ensure competitive salaries, especially for entry-level positions. Conduct regular reviews and adjustments based on performance to retain valuable talent.
+
+Implement policies promoting a healthy work-life balance, including flexible work arrangements, wellness programs, and workload management initiatives.
+
+Offer clear paths for career advancement, mentorship programs, and training opportunities to empower employees and increase retention.
+
+Foster a positive work environment through employee recognition programs. Address factors influencing job satisfaction to enhance employee engagement and retention.
+
+Conduct thorough exit interviews to understand reasons for employee departures. Utilize feedback to improve HR processes and address underlying issues affecting retention.
+
+
+```{r}
+#Loading the dataset
+employee <- read.csv("F:/GBUS 738/Emp.csv")
+# First five rows of the 'employee' dataset
+head(employee)
+#importing ggplot library
+library(ggplot2)
+#importing dplyr library
+library(dplyr)
+
+summary_table_dept <- employee %>%
+  group_by(department, left_company) %>%
+  summarise(count = n())
+
+# Print the summary table
+print(summary_table_dept)
+
+# Data Visualization
+ggplot(summary_table_dept, aes(x = department, y = count, fill = left_company)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Relationship between Leaving the Company and Department",
+       y = "Count") +
+  theme_minimal()
+
+# Calculate the count of employees who left or stayed by department and job level
+summary_table_dept_level <- employee %>%
+  group_by(department, job_level, left_company) %>%
+  summarise(count = n())
+
+# Print the summary table
+print(summary_table_dept_level)
+
+# Data Visualization
+# Create a stacked bar plot to visualize the relationship
+ggplot(summary_table_dept_level, aes(x = department, y = count, fill = job_level)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Relationship between Leaving the Company, Department, and Job Level",
+       y = "Count") +
+  theme_minimal()
+
+Q3 <- employee %>% group_by(left_company,marital_status)%>% select(left_company,marital_status,salary) %>% 
+  summarise( quantile1_salarye = quantile(salary, 1 / 4),
+             mean_salary = mean(salary),
+             quantile3_salary = quantile(salary, 3 / 4)) %>%
+  arrange(marital_status,desc(left_company))
+
+# Print the summary table
+print(Q3)
+
+# Data Visualization
+ggplot(data = employee, aes(x=salary, fill = left_company))+
+  geom_boxplot(aes (y =  marital_status),color = "blue", bins = 30) +
+  labs(title = "Employee's Salary To Company Distribution Divide By Marital_Status(Left the Comapny - Yes/No)",
+       x = "Distence", y = "Department")+
+  theme(plot.title = element_text(size=9))
+
+Q4 <- employee %>% group_by(left_company, department)%>% select(department,salary) %>% 
+  summarise( quantile1_salarye = quantile(salary, 1 / 4),
+             mean_salary = mean(salary),
+             quantile3_salary = quantile(salary, 3 / 4)) %>%
+  arrange(department,desc(left_company))
+
+# Print the summary table
+print(Q4)
+
+# Data Visualization
+ggplot(data = employee, aes(x= department, color = left_company))+
+  geom_point(position=position_jitterdodge(),alpha=.6,aes (y =  salary), bins = 30) +
+  labs(title = "Employee's Salary To Company Distribution Divide By Years in Company(Left the Comapny - Yes/No)",
+       x = "Department", y = "Salary")+
+  theme(plot.title = element_text(size=9),
+        axis.text.x = element_text(size=6) )
+
+
+
+Q5 <- employee %>% group_by(left_company) %>% 
+  summarise(n_employees = n(),
+            min_weekly_hours = min(weekly_hours),
+            avg_weekly_hours = mean(weekly_hours),
+            max_weekly_hours = max(weekly_hours),
+            sd_weekly_hours = sd(weekly_hours)) 
+
+# Print the summary table
+print(Q5)
+
+# Data Visualization
+ggplot(data = employee, aes(x=weekly_hours, fill = left_company))+
+  geom_histogram(color = "blue", bins = 30)+
+  facet_wrap(~ left_company, nrow = 2) +
+  labs(title = "Employee Weekly Hours Distribution by Weekly Hours (Left the Comapny - Yes/No)",
+       x = "Weekly Hours", y = "Proportion of Employees")
+
+Q6 <- employee %>% group_by(left_company,job_level)%>% select(left_company,job_level) %>% summarise(total = n())
+
+# Print the summary table
+print(Q6)
+
+# Data Visualization
+ggplot(data = Q6, aes(x = job_level, fill = left_company)) +  
+  geom_histogram(stat = 'identity', aes(y = total), color = "pink") +
+  facet_wrap(~ left_company, nrow = 2) +
+  labs(title = "Employee Salary Distribution by Position (Left the Company - Yes/No)",
+       x = "Position", y = "Proportion of Employees") 
+
+
+# 7 ## Data Visualization
+ggplot(data = employee, aes(x= job_satisfaction, color = left_company))+
+  geom_point(position=position_jitterdodge(),alpha=.6,aes (y =  salary), bins = 30) +
+  labs(title = "Employee's Salary To Company Distribution Divide By Years in Company(Left the Comapny - Yes/No)",
+       x = "Department", y = "Salary")+
+  theme(plot.title = element_text(size=9),
+        axis.text.x = element_text(size=6) )
+
+
+# 8 #Data Visualization
+ggplot(data = employee, aes(x= yrs_at_company, color = left_company))+
+  geom_point(position=position_jitterdodge(),alpha=.6,aes (y =  salary), bins = 30) +
+  labs(title = "Employee's Salary To Company Distribution Divide By Years in Company(Left the Comapny - Yes/No)",
+       x = "Years at company", y = "Salary")+
+  theme(plot.title = element_text(size=9),
+        axis.text.x = element_text(size=6) )
+
+Q9 <- employee%>% group_by(left_company) %>% 
+  summarise(n_employees = n(),
+            min_salary = min(salary),
+            avg_salary = mean(salary),
+            max_salary = max(salary),
+            sd_salary = sd(salary),
+            pct_less_60k = mean(salary <= 60000))
+
+# Print Summary Table
+print (Q9)
+
+#Data Visualization
+ggplot(data = employee, aes(x = salary, fill = left_company)) + 
+  geom_histogram(aes(y = ..density..), color = "white", bins = 20) +
+  facet_wrap(~ left_company, nrow = 2) +
+  labs(title = "Employee Salary Distribution by Status (Left the Comapny - Yes/No)",
+       x = "Salary (US Dollars", y = "Proportion of Employees")
+```
+  
+
